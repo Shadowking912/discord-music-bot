@@ -4,9 +4,11 @@ import yt_dlp as youtube_dl
 import asyncio
 import nacl
 from ytmusicapi import YTMusic
+from keep_alive import keep_alive
 from discord.ui import Button, View
 from discord import Embed
 import random
+import os
 
 ytmusic = YTMusic()
 
@@ -267,6 +269,7 @@ async def skip(ctx):
         voice_client.stop()
         await play_next(ctx)
         
+keep_alive()
 discord.opus.load_opus("libopus.so")
-TOKEN = "MTM1MjYxMDgxNTYwNTM0NjM0NA.G57---.uXjsa-pexLAVjKkTKTyY2UGzBuQOZih4Es1FV8"
+TOKEN = os.environ.get('discord_token')
 bot.run(TOKEN)
