@@ -270,6 +270,6 @@ async def skip(ctx):
         await play_next(ctx)
         
 keep_alive()
-discord.opus.load_opus("libopus.so")
+discord.opus.load_opus()
 TOKEN = os.environ.get('discord_token')
 bot.run(TOKEN)
