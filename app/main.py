@@ -259,7 +259,8 @@ async def play_next(ctx,requester=None):
             'before_options': FFMPEG_OPTIONS['before_options'],
             'options': f"-vn -t {duration + 1}"  # +1 second buffer to prevent early cutoff
         }
-        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url2, executable="ffmpeg",**ffmpeg_opts))
+        # source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url2, executable="ffmpeg",**ffmpeg_opts))
+        source = discord.FFmpegOpusAudio(url2, executable="ffmpeg", **ffmpeg_opts)
         voice_client.play(source,after=lambda e: asyncio.run_coroutine_threadsafe(play_next(ctx),bot.loop))
         
         # await asyncio.sleep(0.3)
