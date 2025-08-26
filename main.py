@@ -13,7 +13,7 @@ from datetime import timedelta
 from collections import deque
 from concurrent.futures import ProcessPoolExecutor
 import functools
-
+from dotenv import load_dotenv
 
 ytmusic = YTMusic()
 
@@ -227,6 +227,8 @@ async def play(ctx, *, query: str):
             return
          
     info = await asyncio.to_thread(ytdl.extract_info, url, download=False)
+    if title == "Unknown Title":
+        title = info.get('title', 'Unknown Title')
     duration=info['duration']
     url2 = info['url']
     music_queues[ctx.guild.id].append((url2,url, title,duration))
@@ -295,7 +297,7 @@ async def play_next(ctx,requester=None):
             url2,url,title,duration = music_auto_queues[ctx.guild.id].pop(0)
             ffmpeg_opts = {
                 'before_options': FFMPEG_OPTIONS['before_options'],
-                'options': f"-vn -t {duration + 1}"  # +1 second buffer to prevent early cutoff
+                'options': f'-vn -t {duration + 1} -filter:a "volume=1.0"' # +1 second buffer to prevent early cutoff
             }
 
             source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url2, executable="ffmpeg",**ffmpeg_opts))
@@ -354,5 +356,6 @@ async def skip(ctx):
         await play_next(ctx)
         
 discord.opus.load_opus("D:\\nlp\\disc_env\\Lib\\site-packages\\discord\\bin\\libopus-0.x64.dll")
-TOKEN = "MTM1MjYxMDgxNTYwNTM0NjM0NA.G57---.uXjsa-pexLAVjKkTKTyY2UGzBuQOZih4Es1FV8"
+load_dotenv()
+TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 bot.run(TOKEN)
